@@ -13,6 +13,15 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Expense Planner',
+      theme: ThemeData(
+          primarySwatch: Colors.purple,
+          accentColor: Colors.deepPurpleAccent,
+          fontFamily: 'Quicksand',
+          textTheme: ThemeData.light().textTheme.copyWith(
+              title: TextStyle(fontFamily: 'OpenSans', fontSize: 18, fontWeight: FontWeight.bold),),
+          appBarTheme: AppBarTheme(
+              textTheme: ThemeData.light().textTheme.copyWith(
+                  title: TextStyle(fontFamily: 'OpenSans', fontSize: 20, fontWeight: FontWeight.bold)))),
       home: MyHomePage(),
     );
   }
@@ -24,7 +33,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-
   final List<Transaction> _userTransaction = [
     Transaction(
       id: 't1',
@@ -45,14 +53,11 @@ class _MyHomePageState extends State<MyHomePage> {
         title: txTitle,
         amount: txAmount,
         date: DateTime.now(),
-        id: DateTime.now().toString()
-    );
+        id: DateTime.now().toString());
 
     setState(() {
       _userTransaction.add(newTx);
     });
-
-
   }
 
   void _startAddNewTransaction(BuildContext ctx) {
@@ -105,6 +110,3 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 }
-
-
-
