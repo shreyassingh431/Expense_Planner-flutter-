@@ -18,7 +18,7 @@ class ChartBar extends StatelessWidget {
       Container(height: 60, width: 10, child: Stack(children: <Widget>[ // bar, stack helps in overlap in 3 dimension( elevation, bringtofront)
         Container(decoration: BoxDecoration(border: Border.all(
             color: Colors.grey, width: 1.0),
-          color: Color.fromARGB(220, 220, 220, 1),
+          color: Color.fromARGB(128, 112,128,144),
           borderRadius: BorderRadius.circular(10),
         ),
         ),

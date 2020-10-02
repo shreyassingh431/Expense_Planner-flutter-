@@ -17,6 +17,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
           primarySwatch: Colors.purple,
           accentColor: Colors.deepPurpleAccent,
+          errorColor: Colors.red,
           fontFamily: 'Quicksand',
           textTheme: ThemeData.light().textTheme.copyWith(
                 title: TextStyle(
@@ -64,15 +65,24 @@ class _MyHomePageState extends State<MyHomePage> {
     }).toList();
   }
 
-  void _addNewTransaction(String txTitle, double txAmount) {
+  void _addNewTransaction(String txTitle, double txAmount, DateTime choosenDate) {
     final newTx = Transaction(
         title: txTitle,
         amount: txAmount,
-        date: DateTime.now(),
+        date: choosenDate,
         id: DateTime.now().toString());
 
     setState(() {
       _userTransaction.add(newTx);
+    });
+  }
+
+  void _deleteTransaction(String id){
+    setState(() {
+      _userTransaction.removeWhere((tx) {
+        return tx.id == id;
+
+      });
     });
   }
 
@@ -82,7 +92,7 @@ class _MyHomePageState extends State<MyHomePage> {
       builder: (_) {
         return GestureDetector(
           onTap: () {},
-          child: NewTransaction(_addNewTransaction),
+          child: NewTransaction(_addNewTransaction ),
           behavior: HitTestBehavior.opaque,
         );
       },
@@ -108,7 +118,7 @@ class _MyHomePageState extends State<MyHomePage> {
         children: <Widget>[
           Chart(_recentTransactions),
           //UserTransaction()
-          TransactionList(_userTransaction)
+          TransactionList(_userTransaction, _deleteTransaction)
         ],
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
