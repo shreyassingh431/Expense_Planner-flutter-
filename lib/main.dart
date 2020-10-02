@@ -19,10 +19,18 @@ class MyApp extends StatelessWidget {
           accentColor: Colors.deepPurpleAccent,
           fontFamily: 'Quicksand',
           textTheme: ThemeData.light().textTheme.copyWith(
-              title: TextStyle(fontFamily: 'OpenSans', fontSize: 18, fontWeight: FontWeight.bold),),
+                title: TextStyle(
+                    fontFamily: 'OpenSans',
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold),
+                button: TextStyle(color: Colors.white),
+              ),
           appBarTheme: AppBarTheme(
               textTheme: ThemeData.light().textTheme.copyWith(
-                  title: TextStyle(fontFamily: 'OpenSans', fontSize: 20, fontWeight: FontWeight.bold)))),
+                  title: TextStyle(
+                      fontFamily: 'OpenSans',
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold)))),
       home: MyHomePage(),
     );
   }
@@ -49,11 +57,11 @@ class _MyHomePageState extends State<MyHomePage> {
     ),
   ];
 
-  List<Transaction> get _recentTransactions{
+  List<Transaction> get _recentTransactions {
     //calculating all transaction younger then 7 days
-     return _userTransaction.where((tx) {
+    return _userTransaction.where((tx) {
       return tx.date.isAfter(DateTime.now().subtract(Duration(days: 7)));
-     }).toList();
+    }).toList();
   }
 
   void _addNewTransaction(String txTitle, double txAmount) {
