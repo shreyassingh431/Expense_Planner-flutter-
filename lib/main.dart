@@ -2,11 +2,17 @@ import 'package:expense_planner/widgets/chart.dart';
 import 'package:expense_planner/widgets/transaction_list.dart';
 import 'package:expense_planner/widgets/user_transaction.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'models/Transaction.dart';
 import 'widgets/new_transaction.dart';
 
-void main() => runApp(MyApp());
+//void main() => runApp(MyApp());
+void main() {
+  //WidgetsFlutterBinding.ensureInitialized(); // need to call before setPreferredOrientations in latest version of flutter
+  //SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp,DeviceOrientation.portraitDown]);  //force portrait
+   runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
@@ -120,24 +126,28 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
+    final appbar = AppBar(
+      title: Text('Expense Planner'),
+      actions: <Widget>[
+        IconButton(
+          icon: Icon(Icons.add),
+          onPressed: () => _startAddNewTransaction(context),
+        )
+      ],
+    );
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Expense Planner'),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.add),
-            onPressed: () => _startAddNewTransaction(context),
-          )
-        ],
-      ),
+      appBar: appbar,
       body: Column(
         //mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          Chart(_recentTransactions),
+          Container(
+            height: (MediaQuery.of(context).size.height - appbar.preferredSize.height - MediaQuery.of(context).padding.top) * 0.3,
+              child: Chart(_recentTransactions)),
           //UserTransaction()
-          TransactionList(_userTransaction, _deleteTransaction)
+          Container(
+              height: (MediaQuery.of(context).size.height - appbar.preferredSize.height - MediaQuery.of(context).padding.top) * 0.7,
+              child: TransactionList(_userTransaction, _deleteTransaction))
         ],
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
