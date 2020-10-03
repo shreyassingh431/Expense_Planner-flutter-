@@ -1,6 +1,7 @@
 import 'package:expense_planner/widgets/chart.dart';
 import 'package:expense_planner/widgets/transaction_list.dart';
 import 'package:expense_planner/widgets/user_transaction.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -11,7 +12,7 @@ import 'widgets/new_transaction.dart';
 void main() {
   //WidgetsFlutterBinding.ensureInitialized(); // need to call before setPreferredOrientations in latest version of flutter
   //SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp,DeviceOrientation.portraitDown]);  //force portrait
-   runApp(MyApp());
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -25,15 +26,21 @@ class MyApp extends StatelessWidget {
           accentColor: Colors.deepPurpleAccent,
           errorColor: Colors.red,
           fontFamily: 'Quicksand',
-          textTheme: ThemeData.light().textTheme.copyWith(
-                title: TextStyle(
-                    fontFamily: 'OpenSans',
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold),
-                button: TextStyle(color: Colors.white),
-              ),
+          textTheme: ThemeData
+              .light()
+              .textTheme
+              .copyWith(
+            title: TextStyle(
+                fontFamily: 'OpenSans',
+                fontSize: 18,
+                fontWeight: FontWeight.bold),
+            button: TextStyle(color: Colors.white),
+          ),
           appBarTheme: AppBarTheme(
-              textTheme: ThemeData.light().textTheme.copyWith(
+              textTheme: ThemeData
+                  .light()
+                  .textTheme
+                  .copyWith(
                   title: TextStyle(
                       fontFamily: 'OpenSans',
                       fontSize: 20,
@@ -74,7 +81,6 @@ class _MyHomePageState extends State<MyHomePage> {
       amount: 29.99,
       date: DateTime.now(),
     ),
-
     Transaction(
       id: 't2',
       title: 'Weekly groceries',
@@ -90,7 +96,8 @@ class _MyHomePageState extends State<MyHomePage> {
     }).toList();
   }
 
-  void _addNewTransaction(String txTitle, double txAmount, DateTime choosenDate) {
+  void _addNewTransaction(String txTitle, double txAmount,
+      DateTime choosenDate) {
     final newTx = Transaction(
         title: txTitle,
         amount: txAmount,
@@ -102,11 +109,10 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  void _deleteTransaction(String id){
+  void _deleteTransaction(String id) {
     setState(() {
       _userTransaction.removeWhere((tx) {
         return tx.id == id;
-
       });
     });
   }
@@ -117,15 +123,21 @@ class _MyHomePageState extends State<MyHomePage> {
       builder: (_) {
         return GestureDetector(
           onTap: () {},
-          child: NewTransaction(_addNewTransaction ),
+          child: NewTransaction(_addNewTransaction),
           behavior: HitTestBehavior.opaque,
         );
       },
     );
   }
 
+  bool _showChart = false;
+
   @override
   Widget build(BuildContext context) {
+    final bool isLandscape = MediaQuery
+        .of(context)
+        .orientation == Orientation.landscape;
+
     final appbar = AppBar(
       title: Text('Expense Planner'),
       actions: <Widget>[
@@ -135,19 +147,67 @@ class _MyHomePageState extends State<MyHomePage> {
         )
       ],
     );
+
+    final txListWidget = Container(
+        height: (MediaQuery
+            .of(context)
+            .size
+            .height -
+            appbar.preferredSize.height -
+            MediaQuery.of(context).padding.top) * 0.7,
+        child: TransactionList(_userTransaction, _deleteTransaction));
+
     return Scaffold(
       appBar: appbar,
       body: Column(
         //mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          Container(
-            height: (MediaQuery.of(context).size.height - appbar.preferredSize.height - MediaQuery.of(context).padding.top) * 0.3,
-              child: Chart(_recentTransactions)),
-          //UserTransaction()
-          Container(
-              height: (MediaQuery.of(context).size.height - appbar.preferredSize.height - MediaQuery.of(context).padding.top) * 0.7,
-              child: TransactionList(_userTransaction, _deleteTransaction))
+          if(isLandscape) Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text('Show Chart'),
+              Switch(
+                  value: _showChart,
+                  onChanged: (val) {
+                    setState(() {
+                      _showChart = val;
+                    });
+                  })
+            ],
+          ),
+
+          if(!isLandscape)
+            Container(
+                height: (MediaQuery
+                    .of(context)
+                    .size
+                    .height -
+                    appbar.preferredSize.height -
+                    MediaQuery
+                        .of(context)
+                        .padding
+                        .top) *
+                    0.3,
+                child: Chart(_recentTransactions)),
+
+          if(!isLandscape) txListWidget,
+
+
+          if(isLandscape)
+          _showChart
+              ? Container(
+              height: (MediaQuery
+                  .of(context)
+                  .size
+                  .height -
+                  appbar.preferredSize.height -
+                  MediaQuery
+                      .of(context)
+                      .padding
+                      .top) * 0.3,
+              child: Chart(_recentTransactions))
+          : txListWidget //UserTransaction()
         ],
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,

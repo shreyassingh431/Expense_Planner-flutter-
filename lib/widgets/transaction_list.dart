@@ -11,8 +11,12 @@ class TransactionList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return  transactions.isEmpty
-            ? Column(
+    return Container(
+        height: 400,
+        child: transactions.isEmpty
+            ? LayoutBuilder(builder: (context, constraints){
+
+              return  Column(
                 children: <Widget>[
                   Text(
                     'No transactions added yet',
@@ -22,13 +26,15 @@ class TransactionList extends StatelessWidget {
                     height: 10,
                   ),
                   Container(
-                      height: 200,
+                      height: constraints.maxHeight * 0.6,
                       child: Image.asset(
                         'assets/images/waiting.png',
                         fit: BoxFit.cover,
                       )),
                 ],
-              )
+              );
+
+        },)
             : ListView.builder(
                 // colon is of ternary operator
                 itemBuilder: (ctx, index) {
@@ -101,6 +107,6 @@ class TransactionList extends StatelessWidget {
                   );
                 },
                 itemCount: transactions.length,
-              );
+              ));
   }
 }
