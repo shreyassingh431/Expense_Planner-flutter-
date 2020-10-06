@@ -1,4 +1,5 @@
 import 'package:expense_planner/models/Transaction.dart';
+import 'package:expense_planner/widgets/transaction_item.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../models/Transaction.dart';
@@ -7,106 +8,57 @@ class TransactionList extends StatelessWidget {
   final List<Transaction> transactions;
   final Function deleteTx;
 
-  TransactionList(this.transactions, this.deleteTx);
+  TransactionList(this.transactions, this.deleteTx) {
+    print("Constructor TransactionList");
+  }
 
   @override
   Widget build(BuildContext context) {
+    print("Build() TransactionList");
     return Container(
-        height: 400,
-        child: transactions.isEmpty
-            ? LayoutBuilder(builder: (context, constraints){
-
-              return  Column(
-                children: <Widget>[
-                  Text(
-                    'No transactions added yet',
-                    style: Theme.of(context).textTheme.title,
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Container(
-                      height: constraints.maxHeight * 0.6,
-                      child: Image.asset(
-                        'assets/images/waiting.png',
-                        fit: BoxFit.cover,
-                      )),
-                ],
-              );
-
-        },)
-            : ListView.builder(
-                // colon is of ternary operator
-                itemBuilder: (ctx, index) {
-                  return Card(
-                    elevation: 5,
-                    margin: EdgeInsets.symmetric(
-                      vertical: 8,
-                      horizontal: 5,
+      height: 400,
+      child: transactions.isEmpty
+          ? LayoutBuilder(
+              builder: (context, constraints) {
+                return Column(
+                  children: <Widget>[
+                    Text(
+                      'No transactions added yet',
+                      style: Theme.of(context).textTheme.title,
                     ),
-                    child: ListTile(
-                      leading: CircleAvatar(
-                        radius: 30,
-                        child: Padding(
-                          padding: EdgeInsets.all(6),
-                          child: FittedBox(
-                            child: Text('\$${transactions[index].amount}'),
-                          ),
-                        ),
-                      ),
-                      title: Text(
-                        transactions[index].title,
-                        style: Theme.of(context).textTheme.title,
-                      ),
-                      subtitle: Text(
-                        DateFormat.yMMMd().format(transactions[index].date),
-                      ),
-                      trailing: IconButton(
-                        icon: Icon(Icons.delete),
-                        color: Theme.of(context).errorColor,
-                        onPressed: () => deleteTx( transactions[index].id),
-                      ),
+                    SizedBox(
+                      height: 10,
                     ),
+                    Container(
+                        height: constraints.maxHeight * 0.6,
+                        child: Image.asset(
+                          'assets/images/waiting.png',
+                          fit: BoxFit.cover,
+                        )),
+                  ],
+                );
+              },
+            )
+          : ListView(
+              children: <Widget>[
+                ...transactions // iterating for each item
+                    .map((tx) => TransactionItem(
+                          key: ValueKey(tx.id),
+                          transactions: tx,
+                          deleteTx: deleteTx,
+                        ))
+                    .toList()
+              ],
+            ),
+      /*----------------------------------------TODO building above listview with using keys for unqiue ID of item----------------------------------------------------------------*/
 
-                    /* child: Row(
-                      children: <Widget>[
-                        Container(
-                          margin: EdgeInsets.symmetric(
-                            vertical: 10,
-                            horizontal: 15,
-                          ),
-                          decoration: BoxDecoration(
-                              border: Border.all(
-                                  color: Theme.of(context).primaryColor,
-                                  width: 2)),
-                          padding: EdgeInsets.all(10),
-                          child: Text(
-                            '\$${transactions[index].amount.toStringAsFixed(2)}',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 20,
-                                color: Theme.of(context).primaryColor),
-                          ),
-                        ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Text(transactions[index].title,
-                                style: Theme.of(context).textTheme.title),
-                            Text(
-                              //DateFormat('yyyy/MM/dd').format(tx.date),  // 1 way
-                              DateFormat.yMMMd()
-                                  .format(transactions[index].date),
-                              //2nd way
-                              style: TextStyle(color: Colors.grey),
-                            )
-                          ],
-                        )
-                      ],
-                    ),*/
-                  );
-                },
-                itemCount: transactions.length,
-              ));
+      // : ListView.builder(
+      //     // colon is of ternary operator
+      //     itemBuilder: (ctx, index) {
+      //       return  TransactionItem(transactions: transactions[index], deleteTx: deleteTx);
+      //     },
+      //     itemCount: transactions.length,
+      //   ));
+    );
   }
 }
